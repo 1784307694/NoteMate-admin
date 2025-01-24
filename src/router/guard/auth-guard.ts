@@ -1,5 +1,6 @@
 import type { RouteLocationNormalized, Router } from "vue-router"
 
+import { addDynamicRoutes } from "@/router"
 import useTokenStore from "@/stores/token"
 import { isNullOrWhitespace } from "@/utils/common"
 

@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import api from "@/api"
 import useTokenStore from "@/stores/token"
 import { useRouter } from "vue-router"
+import { lStorage } from "@/utils/storage"
 
 type UserInfo = {
   id: string
@@ -30,7 +31,10 @@ export const useUserStore = defineStore("user", {
       return state.userInfo?.email
     },
     avatar(state) {
-      return state.userInfo?.avatar
+      return (
+        state.userInfo?.avatar ||
+        "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      )
     },
     role(state) {
       return state.userInfo?.roles || []
@@ -45,15 +49,14 @@ export const useUserStore = defineStore("user", {
   actions: {
     async getUserInfo() {
       try {
-        const res = await api.getUserInfo()
-        console.log(res)
+        const res = await api.base.getUserInfo()
         if (res.data.code === 401) {
           this.logout()
           return
         }
         const { id, username, email, avatar, roles, is_superuser, is_active } = res.data.data
         this.userInfo = { id, username, email, avatar, roles, is_superuser, is_active }
-        return res.data.data
+        return res.data
       } catch (error) {
         return error
       }
@@ -61,6 +64,8 @@ export const useUserStore = defineStore("user", {
     async logout() {
       // 清除登陆逻辑
       useTokenStore().clearToken()
+      // 清除标签数据
+      lStorage.remove("TABS")
     },
     setUserInfo(userInfo: UserInfo) {
       this.userInfo = { ...this.userInfo, ...userInfo }

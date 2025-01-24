@@ -37,7 +37,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
     if (valid) {
       loading.value = true
       try {
-        const res = (await api.login(form)) as unknown as {
+        const res = (await api.base.login(form)) as unknown as {
           code: number
           data: { access_token: string; username: string }
           msg: string

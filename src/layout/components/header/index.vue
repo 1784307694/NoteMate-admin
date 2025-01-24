@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MenuCollapse from "./components/MenuCollapse.vue"
-import Breadcrumb from "./components/Breadcrumb.vue"
+import BreadCrumb from "./components/BreadCrumb.vue"
 import TabBar from "./components/TabBar.vue"
 import UserInfo from "./components/UserInfo.vue"
 </script>
@@ -11,7 +11,7 @@ import UserInfo from "./components/UserInfo.vue"
     <div class="top-bar">
       <div class="left">
         <MenuCollapse />
-        <Breadcrumb />
+        <BreadCrumb />
       </div>
       <div class="right">
         <UserInfo />

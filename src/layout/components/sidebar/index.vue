@@ -6,7 +6,9 @@ import SideMenu from "./components/SideMenu.vue"
 <template>
   <div>
     <SideLogo />
-    <SideMenu />
+    <el-scrollbar>
+      <SideMenu />
+    </el-scrollbar>
   </div>
 </template>
 

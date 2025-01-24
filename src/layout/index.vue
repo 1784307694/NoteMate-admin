@@ -18,10 +18,12 @@ provide("isCollapse", isCollapse)
       <el-container class="right-container">
         <!-- 头部 -->
         <el-header>
-          <Header />
+          <Header></Header>
         </el-header>
         <!-- 主体 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view />
+        </el-main>
       </el-container>
     </el-container>
   </div>

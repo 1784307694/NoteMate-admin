@@ -15,7 +15,7 @@ const app = createApp(App)
 app.use(createPinia())
 
 /** 初始化路由 */
-setupRouter(app)
+await setupRouter(app)
 
 /** 导入 Element Plus */
 app.use(ElementPlus)
