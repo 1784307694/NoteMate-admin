@@ -45,6 +45,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
         if (res.code === 200) {
           useTokenStore().setToken(res.data.access_token, res.data.username)
           handleRememberMe()
+          await router.isReady()
           ElMessage.success("登录成功")
           router.push("/")
         } else {

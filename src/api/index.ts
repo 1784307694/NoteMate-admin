@@ -10,7 +10,7 @@ const base = {
   updatePassword: (data: { old_password: string; new_password: string }) =>
     request.post("/base/update_password", data),
   createUser: (data: {
-    phone: string
+    phone?: string
     email: string
     username: string
     password: string
@@ -40,7 +40,7 @@ const user = {
 
 // 角色模块
 const role = {
-  getList: (params: { page?: number; page_size?: number; role_name?: string }) =>
+  getList: (params?: { page?: number; page_size?: number; role_name?: string }) =>
     request.get("/roles/list", { params }),
   getDetail: (params: { role_id: number }) => request.get("/roles/get", { params }),
   create: (data: { name: string; desc?: string }) => request.post("/roles/create", data),

@@ -7,10 +7,11 @@ const router = useRouter()
 const userStore = useUserStore()
 const tokenStore = useTokenStore()
 
-const handleCommand = (command: string) => {
+const handleCommand = async (command: string) => {
   if (command === "logout") {
-    userStore.logout()
-    router.push("/login")
+    await userStore.logout()
+    // 重新渲染路由
+    router.go(0)
   }
   if (command === "profile") {
     router.push("/profile")

@@ -1,7 +1,6 @@
 import { defineStore } from "pinia"
 import api from "@/api"
 import useTokenStore from "@/stores/token"
-import { useRouter } from "vue-router"
 import { lStorage } from "@/utils/storage"
 
 type UserInfo = {
@@ -66,6 +65,8 @@ export const useUserStore = defineStore("user", {
       useTokenStore().clearToken()
       // 清除标签数据
       lStorage.remove("TABS")
+      // 重置用户信息
+      this.userInfo = {} as UserInfo
     },
     setUserInfo(userInfo: UserInfo) {
       this.userInfo = { ...this.userInfo, ...userInfo }
