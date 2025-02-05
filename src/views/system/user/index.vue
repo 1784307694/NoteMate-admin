@@ -1,33 +1,44 @@
 <template>
   <div class="container">
     <div>
-      <Search />
+      <Search @search="handleSearch" />
     </div>
     <div class="content-box">
       <div class="content-header">
-        <Header />
+        <Header @refresh="handleRefresh" />
       </div>
       <div class="content-table">
-        <Table />
+        <Table ref="tableRef" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue"
 import Search from "./components/search.vue"
 import Header from "./components/header.vue"
 import Table from "./components/table.vue"
+
+const tableRef = ref()
+
+const handleSearch = (params: any) => {
+  tableRef.value?.handleSearch(params)
+}
+
+const handleRefresh = () => {
+  tableRef.value?.getUserList()
+}
 </script>
 
 <style scoped>
 .container {
   height: 100%;
   background-color: #f5f6fb;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .content-box {
@@ -40,13 +51,13 @@ import Table from "./components/table.vue"
 }
 
 .content-header {
-  padding: 24px 32px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
 
 .content-table {
   flex: 1;
-  padding: 24px 32px;
+  padding: 16px 24px;
   overflow: auto;
 }
 </style>

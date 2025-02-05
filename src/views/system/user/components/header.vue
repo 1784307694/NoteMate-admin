@@ -4,10 +4,12 @@ import { ref, reactive, onMounted } from "vue"
 import api from "@/api"
 import { ElMessage } from "element-plus"
 import type { FormRules } from "element-plus"
+import { User, Message, Phone, UserFilled, Plus } from "@element-plus/icons-vue"
 
 interface UserForm {
   username: string
   email: string
+  phone: string | undefined
   password: string
   confirmPassword: string
   roles?: number[]
@@ -24,6 +26,7 @@ const userFormRef = ref()
 const userForm = reactive<UserForm>({
   username: "",
   email: "",
+  phone: "",
   password: "",
   confirmPassword: "",
   roles: [],
@@ -33,6 +36,8 @@ const userForm = reactive<UserForm>({
 })
 
 const roles = ref()
+
+const emit = defineEmits(["refresh"])
 
 // 获取角色列表
 const getRoles = async () => {
@@ -62,10 +67,16 @@ const handleSubmit = () => {
         submitData.role_ids = Array.isArray(submitData.roles) ? submitData.roles : []
         delete submitData.roles
 
+        // 处理空字符串
+        if (submitData.phone === "") {
+          submitData.phone = undefined
+        }
+
         // 提交表单
         await api.base.createUser(submitData)
         ElMessage.success("创建用户成功")
         handleClose()
+        emit("refresh")
       } catch (error) {
         console.error("创建用户失败:", error)
         ElMessage.error("创建用户失败")
@@ -84,6 +95,7 @@ const rules: FormRules = {
     { required: true, message: "请输入邮箱", trigger: "blur" },
     { type: "email", message: "请输入正确的邮箱格式", trigger: "blur" },
   ],
+  phone: [{ required: true, message: "请输入手机号码", trigger: "blur" }],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
     { min: 6, message: "密码不能少于6个字符", trigger: "blur" },
@@ -126,10 +138,25 @@ onMounted(() => {
     >
       <el-form ref="userFormRef" :model="userForm" :rules="rules" label-width="100px">
         <el-form-item label="用户名称" prop="username">
-          <el-input v-model="userForm.username" placeholder="请输入用户名称" />
+          <el-input v-model="userForm.username" placeholder="请输入用户名称" clearable>
+            <template #prefix>
+              <el-icon class="input-icon"><User /></el-icon>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="userForm.email" placeholder="请输入邮箱" />
+          <el-input v-model="userForm.email" placeholder="请输入邮箱" clearable>
+            <template #prefix>
+              <el-icon class="input-icon"><Message /></el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input v-model="userForm.phone" placeholder="请输入手机号码" clearable>
+            <template #prefix>
+              <el-icon class="input-icon"><Phone /></el-icon>
+            </template>
+          </el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input
@@ -155,7 +182,7 @@ onMounted(() => {
         <el-form-item label="超级用户">
           <el-switch v-model="userForm.is_superuser" />
         </el-form-item>
-        <el-form-item label="是否禁用">
+        <el-form-item label="启用状态">
           <el-switch v-model="userForm.is_active" />
         </el-form-item>
       </el-form>
@@ -174,43 +201,71 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
 }
 
-.title {
+:deep(.el-text) {
   font-size: 16px;
   font-weight: 500;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
-.el-button {
-  height: 32px;
-  padding: 0 16px;
+:deep(.el-button) {
+  padding: 8px 16px;
   font-weight: 500;
-  font-size: 14px;
 }
 
-.el-button .el-icon {
+:deep(.el-button--primary) {
+  background-color: #67c23a;
+  border-color: #67c23a;
+  color: #fff;
+}
+
+:deep(.el-button--primary:hover) {
+  background-color: #85ce61;
+  border-color: #85ce61;
+}
+
+:deep(.el-button .el-icon) {
   margin-right: 4px;
   font-size: 14px;
 }
 
+:deep(.el-dialog) {
+  border-radius: 8px;
+}
+
+:deep(.el-dialog__header) {
+  margin: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+}
+
 :deep(.el-dialog__body) {
-  padding: 20px 40px;
+  padding: 16px 24px;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 12px 24px;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+:deep(.el-switch.is-checked .el-switch__core) {
+  border-color: #67c23a;
+  background-color: #67c23a;
 }
 
 :deep(.el-form-item) {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 :deep(.el-input__wrapper),
-:deep(.el-select__wrapper) {
-  box-shadow: 0 0 0 1px #dcdfe6 inset;
+:deep(.el-select .el-input__wrapper) {
+  box-shadow: 0 0 0 1px var(--el-border-color) inset;
 }
 
 :deep(.el-input__wrapper:hover),
 :deep(.el-select .el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #c0c4cc inset;
+  box-shadow: 0 0 0 1px var(--el-border-color-darker) inset;
 }
 
 :deep(.el-input__wrapper.is-focus),
@@ -218,33 +273,10 @@ onMounted(() => {
   box-shadow: 0 0 0 1px #67c23a inset !important;
 }
 
-.dialog-footer {
-  width: 100%;
-  text-align: right;
-  padding-top: 20px;
-  border-top: 1px solid var(--el-border-color-lighter);
-}
-
-:deep(.el-button--primary) {
-  --el-button-bg-color: #67c23a;
-  --el-button-border-color: #67c23a;
-  --el-button-hover-bg-color: #85ce61;
-  --el-button-hover-border-color: #85ce61;
-  --el-button-active-bg-color: #5daf34;
-  --el-button-active-border-color: #5daf34;
-}
-
-:deep(.el-switch.is-checked .el-switch__core) {
-  background-color: #67c23a !important;
-  border-color: #67c23a !important;
-}
-
-:deep(.el-dialog__footer .el-button--primary) {
-  --el-button-bg-color: #67c23a;
-  --el-button-border-color: #67c23a;
-  --el-button-hover-bg-color: #85ce61;
-  --el-button-hover-border-color: #85ce61;
-  --el-button-active-bg-color: #5daf34;
-  --el-button-active-border-color: #5daf34;
+:deep(.input-icon),
+:deep(.select-icon) {
+  margin-right: 4px;
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
 }
 </style>

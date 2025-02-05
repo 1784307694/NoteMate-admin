@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue"
+import {
+  Search,
+  Refresh,
+  Calendar,
+  User,
+  Menu,
+  Operation,
+  Document,
+  CircleCheck,
+} from "@element-plus/icons-vue"
 
 interface SearchForm {
   username: string
-  email: string
-  phone: string
-  is_active: boolean | undefined
+  module: string
+  method: string
+  summary: string
+  status: number | undefined
   dateRange: [Date, Date] | undefined
 }
 
@@ -13,34 +24,51 @@ const emit = defineEmits(["search"])
 
 const searchForm = ref<SearchForm>({
   username: "",
-  email: "",
-  phone: "",
-  is_active: undefined,
+  module: "",
+  method: "",
+  summary: "",
+  status: undefined,
   dateRange: undefined,
 })
 
 const handleSearch = () => {
-  console.log(searchForm.value)
   emit("search", {
     username: searchForm.value.username,
-    email: searchForm.value.email,
-    phone: searchForm.value.phone,
-    is_active: searchForm.value.is_active,
+    module: searchForm.value.module,
+    method: searchForm.value.method,
+    summary: searchForm.value.summary,
+    status: searchForm.value.status,
     start_time: searchForm.value.dateRange?.[0]?.toISOString(),
     end_time: searchForm.value.dateRange?.[1]?.toISOString(),
   })
 }
-// 重置
+
 const handleReset = () => {
   searchForm.value = {
     username: "",
-    email: "",
-    phone: "",
-    is_active: undefined,
+    module: "",
+    method: "",
+    summary: "",
+    status: undefined,
     dateRange: undefined,
   }
   emit("search", {})
 }
+
+const methodOptions = [
+  { label: "GET", value: "GET" },
+  { label: "POST", value: "POST" },
+  { label: "PUT", value: "PUT" },
+  { label: "DELETE", value: "DELETE" },
+]
+
+const statusOptions = [
+  { label: "成功(200)", value: 200 },
+  { label: "未授权(401)", value: 401 },
+  { label: "禁止访问(403)", value: 403 },
+  { label: "未找到(404)", value: 404 },
+  { label: "服务器错误(500)", value: 500 },
+]
 </script>
 
 <template>
@@ -48,8 +76,8 @@ const handleReset = () => {
     <el-form :model="searchForm" label-width="80px">
       <el-row :gutter="32">
         <el-col :span="7">
-          <el-form-item label="用户名">
-            <el-input v-model="searchForm.username" placeholder="请输入查询的用户名" clearable>
+          <el-form-item label="操作人">
+            <el-input v-model="searchForm.username" placeholder="请输入操作人名称" clearable>
               <template #prefix>
                 <el-icon class="input-icon"><User /></el-icon>
               </template>
@@ -57,39 +85,63 @@ const handleReset = () => {
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="邮箱">
-            <el-input v-model="searchForm.email" placeholder="请输入查询的邮箱" clearable>
+          <el-form-item label="功能模块">
+            <el-input v-model="searchForm.module" placeholder="请输入功能模块" clearable>
               <template #prefix>
-                <el-icon class="input-icon"><Message /></el-icon>
+                <el-icon class="input-icon"><Menu /></el-icon>
               </template>
             </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="手机号码">
-            <el-input v-model="searchForm.phone" placeholder="请输入查询的手机号码" clearable>
+          <el-form-item label="请求方法">
+            <el-select
+              v-model="searchForm.method"
+              placeholder="请选择请求方法"
+              clearable
+              style="width: 100%"
+            >
               <template #prefix>
-                <el-icon class="input-icon"><Phone /></el-icon>
+                <el-icon class="select-icon"><Operation /></el-icon>
               </template>
-            </el-input>
+              <el-option
+                v-for="item in methodOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row :gutter="32">
         <el-col :span="7">
-          <el-form-item label="状态">
+          <el-form-item label="接口描述">
+            <el-input v-model="searchForm.summary" placeholder="请输入接口描述" clearable>
+              <template #prefix>
+                <el-icon class="input-icon"><Document /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="状态码">
             <el-select
-              v-model="searchForm.is_active"
-              placeholder="请选择查询的状态"
+              v-model="searchForm.status"
+              placeholder="请选择状态码"
               clearable
               style="width: 100%"
             >
               <template #prefix>
                 <el-icon class="select-icon"><CircleCheck /></el-icon>
               </template>
-              <el-option label="启用" :value="true" />
-              <el-option label="禁用" :value="false" />
+              <el-option
+                v-for="item in statusOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -109,7 +161,7 @@ const handleReset = () => {
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="10" style="text-align: right; margin-top: 4px">
+        <el-col :span="3" style="text-align: right; margin-top: 4px">
           <el-button @click="handleReset" class="reset-button">
             <el-icon><Refresh /></el-icon>重置
           </el-button>

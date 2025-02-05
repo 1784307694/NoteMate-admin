@@ -25,7 +25,7 @@ function findFullPath(path: string, menus: MenuItem[] = menuData.value, parentPa
     const currentPath = parentPath ? `${parentPath}/${menu.path}` : menu.path
 
     // 如果找到匹配的路径，返回完整路径
-    if (menu.path === path) {
+    if (currentPath === path) {
       return currentPath
     }
 
@@ -44,16 +44,16 @@ function findFullPath(path: string, menus: MenuItem[] = menuData.value, parentPa
 function findMenuPath(currentPath: string, menus: MenuItem[] = menuData.value): string {
   // 先检查是否完全匹配
   for (const menu of menus) {
-    const menuPath = menu.path
-    if (currentPath === menuPath) {
-      return menuPath
+    if (currentPath === menu.path) {
+      return menu.path
     }
 
     // 检查子菜单
     if (menu.children) {
       for (const child of menu.children) {
-        if (currentPath === `${menu.path}/${child.path}`) {
-          return child.path
+        const fullChildPath = `${menu.path}/${child.path}`
+        if (currentPath === fullChildPath) {
+          return fullChildPath
         }
       }
     }
@@ -62,10 +62,10 @@ function findMenuPath(currentPath: string, menus: MenuItem[] = menuData.value): 
   // 如果没有完全匹配，返回当前路径
   return currentPath
 }
+
 // 点击菜单回调
 const handleSelect = (key: string) => {
-  const fullPath = findFullPath(key)
-  router.push(fullPath)
+  router.push(key)
 }
 
 // 更新激活的菜单项
@@ -115,7 +115,11 @@ onMounted(() => {
 
     <template v-for="menu in menuData" :key="menu.path">
       <!-- 有子菜单的情况 -->
-      <el-sub-menu v-if="menu.children && menu.children.length > 0" :index="menu.path">
+      <el-sub-menu
+        v-if="menu.children && menu.children.length > 0"
+        :index="menu.path"
+        v-show="!menu.is_hidden"
+      >
         <template #title>
           <el-icon class="menu-icon"><component :is="menu.icon || 'Menu'" /></el-icon>
           <span>{{ menu.name }}</span>
@@ -124,7 +128,7 @@ onMounted(() => {
         <el-menu-item
           v-for="child in menu.children"
           :key="child.path"
-          :index="child.path"
+          :index="`${menu.path}/${child.path}`"
           v-show="!child.is_hidden"
         >
           <el-icon class="menu-icon"><component :is="child.icon || 'Menu'" /></el-icon>

@@ -59,7 +59,7 @@ provide("isCollapse", isCollapse)
 .el-main {
   flex: 1;
   overflow: auto;
-  padding: 20px;
+  padding: 5px;
   background-color: #f5f6fb;
 }
 </style>

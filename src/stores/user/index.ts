@@ -8,7 +8,7 @@ type UserInfo = {
   username: string
   email: string
   avatar: string
-  roles: string[]
+  roles: number[]
   is_superuser: boolean
   is_active: boolean
 }
@@ -53,7 +53,7 @@ export const useUserStore = defineStore("user", {
           this.logout()
           return
         }
-        const { id, username, email, avatar, roles, is_superuser, is_active } = res.data.data
+        const { id, username, email, avatar, roles, is_superuser, is_active } = res.data
         this.userInfo = { id, username, email, avatar, roles, is_superuser, is_active }
         return res.data
       } catch (error) {
@@ -61,12 +61,14 @@ export const useUserStore = defineStore("user", {
       }
     },
     async logout() {
-      // 清除登陆逻辑
-      useTokenStore().clearToken()
-      // 清除标签数据
-      lStorage.remove("TABS")
-      // 重置用户信息
-      this.userInfo = {} as UserInfo
+      try {
+        // 重置用户信息
+        this.userInfo = {} as UserInfo
+        // 清除登陆逻辑
+        useTokenStore().clearToken()
+      } catch (error) {
+        console.error("退出登录时发生错误:", error)
+      }
     },
     setUserInfo(userInfo: UserInfo) {
       this.userInfo = { ...this.userInfo, ...userInfo }

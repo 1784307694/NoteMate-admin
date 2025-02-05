@@ -8,6 +8,7 @@ import { useRouter } from "vue-router"
 import api from "@/api"
 import useTokenStore from "@/stores/token"
 import { lStorage } from "@/utils/storage"
+import useUserStore from "@/stores/user"
 
 const router = useRouter()
 const formRef = ref<FormInstance>()
@@ -44,6 +45,7 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
         }
         if (res.code === 200) {
           useTokenStore().setToken(res.data.access_token, res.data.username)
+          useUserStore().getUserInfo()
           handleRememberMe()
           await router.isReady()
           ElMessage.success("登录成功")

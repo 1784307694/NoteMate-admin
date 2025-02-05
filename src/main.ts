@@ -9,6 +9,7 @@ import { setupRouter } from "./router"
 import "element-plus/dist/index.css"
 import "normalize.css"
 import "./assets/css/index.less"
+import "./assets/css/loading.css"
 
 const app = createApp(App)
 

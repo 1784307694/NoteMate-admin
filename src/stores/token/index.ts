@@ -17,6 +17,8 @@ const useTokenStore = defineStore("token", {
       this.token = ""
       this.username = ""
       lStorage.remove("access_token")
+      // 清除标签数据
+      lStorage.remove("TABS")
     },
   },
 })
