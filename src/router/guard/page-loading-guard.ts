@@ -4,7 +4,7 @@ import LoadingComponent from "@/components/loading/index.vue"
 
 export function createPageLoadingGuard(router: Router) {
   let loadingContainer: HTMLElement | null = null
-  let minLoadingTime = 600 // 最小加载时间
+  let minLoadingTime = 400 // 最小加载时间
   let loadingStartTime = 0 // 记录加载开始时间
 
   const showLoading = () => {

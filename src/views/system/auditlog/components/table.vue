@@ -165,7 +165,7 @@ onMounted(() => {
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="response_time" label="响应时间" width="100" align="center">
+      <el-table-column prop="response_time" label="响应时间" width="120" align="center">
         <template #default="{ row }">
           <el-tag :type="row.response_time > 1000 ? 'warning' : 'success'">
             {{ formatResponseTime(row.response_time) }}

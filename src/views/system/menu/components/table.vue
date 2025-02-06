@@ -132,7 +132,13 @@ const handleEditClose = () => {
 
 // 处理删除
 const handleDelete = (row: Menu) => {
-  ElMessageBox.confirm(`确定要删除菜单 "${row.name}" 吗？`, "删除确认", {
+  // 检查是否有子菜单
+  if (row.children && row.children.length > 0) {
+    ElMessage.warning("无法删除含有子菜单的菜单")
+    return
+  }
+
+  ElMessageBox.confirm(`确定要删除菜单 "${row.name}" 吗?`, "删除确认", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",

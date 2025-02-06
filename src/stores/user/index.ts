@@ -7,6 +7,7 @@ type UserInfo = {
   id: string
   username: string
   email: string
+  phone: string
   avatar: string
   roles: number[]
   is_superuser: boolean
@@ -28,6 +29,9 @@ export const useUserStore = defineStore("user", {
     },
     email(state) {
       return state.userInfo?.email
+    },
+    phone(state) {
+      return state.userInfo?.phone
     },
     avatar(state) {
       return (
@@ -53,8 +57,8 @@ export const useUserStore = defineStore("user", {
           this.logout()
           return
         }
-        const { id, username, email, avatar, roles, is_superuser, is_active } = res.data
-        this.userInfo = { id, username, email, avatar, roles, is_superuser, is_active }
+        const { id, username, email, phone, avatar, roles, is_superuser, is_active } = res.data
+        this.userInfo = { id, username, email, phone, avatar, roles, is_superuser, is_active }
         return res.data
       } catch (error) {
         return error
@@ -66,6 +70,7 @@ export const useUserStore = defineStore("user", {
         this.userInfo = {} as UserInfo
         // 清除登陆逻辑
         useTokenStore().clearToken()
+        lStorage.remove("TABS")
       } catch (error) {
         console.error("退出登录时发生错误:", error)
       }

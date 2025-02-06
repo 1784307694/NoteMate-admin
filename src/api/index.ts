@@ -18,6 +18,8 @@ const base = {
     is_superuser?: boolean
     role_ids?: number[]
   }) => request.post("/base/create", data),
+  updateBaseUserInfo: (data: { email?: string; phone?: string; username?: string }) =>
+    request.post("/base/updateUserInfo", data),
 }
 
 // 用户模块
