@@ -33,7 +33,7 @@ const handleRefresh = () => {
 
 <style scoped>
 .container {
-  height: 100%;
+  height: 90%;
   background-color: #f5f6fb;
   padding: 12px;
   display: flex;

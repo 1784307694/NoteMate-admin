@@ -49,10 +49,13 @@ provide("isCollapse", isCollapse)
   height: 100%;
   transition: width 0.3s;
   background-color: #fff;
+  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid #e4e7ed;
 }
 
 .el-header {
   height: 110px;
+  padding-left: 6px;
   background-color: #fff;
 }
 
